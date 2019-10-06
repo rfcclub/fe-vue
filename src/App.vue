@@ -1,28 +1,32 @@
+// App.vue
+
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="container-fluid clear-pad">
+        <v-header></v-header>
+        <transition name="fade">
+            <router-view></router-view>
+        </transition>
+    </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+    import JQuery from 'jquery'
+    window.$ = JQuery
+    window.JQuery = JQuery
+    import VHeader from './components/VHeader.vue'
+    export default {
+      components: {
+        VHeader
+      },
+      created () {
+        let purchaseOrder = this.$session.get('purchaseOrder')
+        if (purchaseOrder) {
+          let totalItems = purchaseOrder.cartProducts.reduce((total, product) => total + product.quantity, 0)
+          this.$store.commit('setOrderCount', totalItems)
+        }
+      }
+    }
 </script>
-
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+.fade-enter-active, .fade-leave-active { transition: opacity .5s }
+.fade-enter, .fade-leave-active { opacity: 0 }
 </style>
